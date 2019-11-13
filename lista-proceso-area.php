@@ -41,7 +41,7 @@ try {
         <input type="hidden" name="id_area" id="id_area" value="<?php echo $ida; ?>">
         <input type="hidden" name="id_depen" id="id_depen" value="<?php echo $idp; ?>">
         <h1>
-          Listado de Procesos por Área
+          <?php echo $resultado[0]["areaNombre"]; ?>
           <small></small>
         </h1>
         <ol class="breadcrumb">
@@ -58,7 +58,7 @@ try {
           <div class="col-xs-12">
             <div class="box">
               <div class="box-header">
-                <h3 class="box-title"></h3>
+                <h3 class="box-title">Lista de Proceso de la Área</h3>
               </div>
               <!-- /.box-header -->
               <div class="box-body">

@@ -10,7 +10,9 @@
   $idp = $_GET["idp"];
   /* Codigo para obtener todas las dependencias  y sus relaciones */
   try {
-    $area_stmn = $objetoPDO->prepare("SELECT a.id_area, a.nombre, d.nombre AS depenNombre,a.dependencia_perteneciente, a.ruta_perfil_puesto, a.ruta_atribucion, a.ruta_diagrama FROM areas AS a
+    $area_stmn = $objetoPDO->prepare("SELECT a.id_area, a.nombre, d.nombre AS depenNombre,a.dependencia_perteneciente, a.ruta_perfil_puesto, a.ruta_atribucion, a.ruta_diagrama,
+    (SELECT count(*) FROM procesos AS p WHERE p.area_perteneciente = :id) AS noProcesos  
+    FROM areas AS a
     INNER JOIN dependencias AS d
     ON a.dependencia_perteneciente = d.id_dependencia
     WHERE id_area = :id;");
@@ -51,8 +53,10 @@
         </ol>
         <h4><a href="<?php echo './perfiles-pdf/areas/' . $data_area[0]['ruta_perfil_puesto']; ?>" target="_blank" id="perfil_puesto">Perfil de Puesto</a></h4>
         <h4><a href="<?php echo './atribuciones-pdf/areas/' . $data_area[0]['ruta_atribucion']; ?>" target="_blank" id="atribuciones">Atribuciones</a></h4>
-        <h4><a href="lista-proceso-area.php?ida=<?php echo $ida; ?>&idp=<?php echo $idp; ?>">Procesos</a></h4>
-      </section>
+        <?php if ($data_area[0]["noProcesos"] != 0) { ?>
+          <h4><a href="lista-proceso-area.php?ida=<?php echo $ida; ?>&idp=<?php echo $idp; ?>">Procesos</a></h4>
+        <?php } ?>  
+        </section>
       <!-- Main content -->
       <section class="content">
         <input type="hidden" name="id_area" id="id_area" value="<?php echo $ida; ?>">
@@ -60,8 +64,9 @@
         <!-- Default box -->
         <div class="box">
           <div class="box-header with-border">
+            <h4>Organigrama del área</h4>
           </div>
-          <div class="box-body text-center animated slideInDown" id="chart-container">
+          <div class="box-body text-center animated fadeIn" id="chart-container">
             <!-- <ul id="ul-data" hidden></ul> -->
             <div class="row">
               <div class="col-lg-10" style="margin-bottom:5px;">

@@ -36,12 +36,12 @@
           <div class="box-header with-border">
             <h3 class="box-title">Para elegir una dependencia solo da click en la que deseas acceder. Además, puedes usar la rueda del ratón para hacer zoom.</h3>
           </div>
-          <div class="box-body text-center animated slideInDown" id="chart-container">
+          <div class="box-body text-center animated fadeIn" id="chart-container">
             <div class="row">
               <div class="col-lg-10" style="margin-bottom:5px;">
                 <img src="assets/img/organigrama_general.png" alt="..." class="img-thumbnail" id="diagrama">
               </div>
-              <div class="col-lg-2 text-right">
+              <div class="col-lg-2 text-center">
                 <div class="callout callout-success">
                   <h4>Dependencias</h4>
                 </div>

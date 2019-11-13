@@ -9,7 +9,9 @@
   $id = $_GET["id"];
   /* Codigo para obtener todas las dependencias  y sus relaciones */
   try {
-    $dependenciaData =  $objetoPDO->prepare("SELECT id_dependencia,nombre, ruta_objetivo_general, ruta_perfil_puesto, ruta_atribuciones, ruta_diagrama FROM dependencias WHERE id_dependencia = :id");
+    $dependenciaData =  $objetoPDO->prepare("SELECT id_dependencia,nombre, ruta_objetivo_general, ruta_perfil_puesto, ruta_atribuciones, ruta_diagrama,
+    (SELECT count(*) FROM procesos_dependencias AS ps WHERE ps.dependencia_perteneciente = :id) AS noProcesos
+    FROM dependencias WHERE id_dependencia = :id");
     $dependenciaData->bindParam(":id", $id);
     $dependenciaData->execute();
     $dependenciaData = $dependenciaData->fetchAll(PDO::FETCH_ASSOC);
@@ -54,7 +56,9 @@
         <h4><a href="<?php echo './objetivos-pdf/generales/' . $dependenciaData[0]['ruta_objetivo_general']; ?>" target="_blank" id="objetivo_general">Objetivo General</a></h4>
         <h4><a href="<?php echo './perfiles-pdf/dependencias/' . $dependenciaData[0]['ruta_perfil_puesto']; ?>" target="_blank" id="perfil_puesto">Perfil de Puesto</a></h4>
         <h4><a href="<?php echo './atribuciones-pdf/dependencias/' . $dependenciaData[0]['ruta_atribuciones']; ?>" target="_blank" id="atribuciones">Atribuciones</a></h4>
-        <h4><a href="lista-procesos-dependencia.php?idp=<?php echo $dependenciaData[0]['id_dependencia']; ?>">Ver Procesos</a></h4>
+        <?php if ( $dependenciaData[0]["noProcesos"] != "0" ) { ?> 
+          <h4><a href="lista-procesos-dependencia.php?idp=<?php echo $dependenciaData[0]['id_dependencia']; ?>">Ver Procesos</a></h4>
+        <?php } ?>
       </section>
       <!-- Main content -->
       <section class="content">
@@ -62,7 +66,7 @@
         <!-- Default box -->
         <div class="box">
           <div class="box-header with-border">
-            <h4>Direcciones de la Dependencia</h4>
+            <h4>Organigrama de la Dependencia</h4>
           </div>
           <div class="box-body text-center animated fadeIn" id="chart-container">
             <!-- <ul id="ul-data" hidden></ul> -->
