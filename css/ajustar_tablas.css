@@ -1,0 +1,12 @@
+table {
+	width:100%;
+	display: block;
+    overflow-x: auto;
+}
+thead {
+	display: none;
+}
+ tbody td {
+ 	display: block;
+ 	text-align:center;
+ }
