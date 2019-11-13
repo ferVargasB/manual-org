@@ -152,7 +152,7 @@ function add_actor() {
         var current_button = this;
 
         $.ajax({
-            url: "servicios/ws_agregar_actores_procesos_dependencias.php?no_service=2",
+            url: "servicios/ws_agregar_actores_procesos.php?numero_servicio=2",
             type: "POST",
             data: { id_proceso: $("#id_proceso").val(), id_actor: $(current_actor).val() },
             dataType: "JSON",
@@ -186,7 +186,7 @@ function borrar_actor(boton) {
     var current_button = boton;
 
     $.ajax({
-        url: "servicios/ws_eliminar_actores_procesos_dependencias.php?no_service=2",
+        url: "servicios/ws_eliminar_actores_procesos.php?numero_servicio=2",
         type: "POST",
         data: { id_proceso: $("#id_proceso").val(), id_actor: $(current_actor).val() },
         dataType: "JSON",
