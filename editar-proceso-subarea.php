@@ -70,7 +70,7 @@
                     </div>
                     <div class="box-body">
                         <input type="text" id="no_actores_actual" value="<?php echo $resultado[0]['numero_actores']; ?>" hidden>
-                        <form enctype="multipart/form-data" name="actualizar-registro" id="actualizar-registro" method="post" action="modelos/modelo-proceso.php">
+                        <form enctype="multipart/form-data" name="actualizar-registro" id="actualizar-registro" method="post" action="modelos/modelo-proceso-subarea.php">
                             <input type="hidden" id="id_proceso" name="id_proceso" value="<?php echo $id_proceso; ?>">
                             <div class="box-body" id="div_proceso">
                                 <div class="form-group">

@@ -11,11 +11,9 @@ if ($_POST['registro'] == 'nuevo' && isset($_POST['subarea_perteneciente'])) {
     $numero_actores = $_POST["numero_actores"];
     $subarea_perteneciente = $_POST["subarea_perteneciente"];
     try {
-        //obtener iniciales
-        $iniciales_proceso = obtener_iniciales($nombre);
         //PARTE PARA SUBIR LOS DOCUMENTOS
         //carga el diagrama del proceso 
-        $_FILES["diagrama"]["name"] = "diagrama-".$subarea_perteneciente."-".$iniciales_proceso . ".png";
+        $_FILES["diagrama"]["name"] = "diagrama_".$subarea_perteneciente."_".strtr($nombre," ","_").".png";
         $ruta_diagrama = "../procesos/por_subareas/" . basename($_FILES['diagrama']['name']);
         if (move_uploaded_file($_FILES['diagrama']['tmp_name'], $ruta_diagrama)) { } else {
             throw new Exception('No se ha podido subir archivo diagrama');
@@ -24,7 +22,7 @@ if ($_POST['registro'] == 'nuevo' && isset($_POST['subarea_perteneciente'])) {
         //carga la ficha tecnica
         $ruta_ficha = "";
         if ($_FILES["ficha"]["size"] > 0) {
-            $_FILES["ficha"]["name"] = "ficha-".$subarea_perteneciente."-".$iniciales_proceso . ".pdf";
+            $_FILES["ficha"]["name"] = "ficha_".$subarea_perteneciente."_".strtr($nombre," ","_").".pdf";
             $ruta_ficha = "../procesos/por_subareas/" . basename($_FILES['ficha']['name']);
             if (!move_uploaded_file($_FILES['ficha']['tmp_name'], $ruta_ficha)) {
                 throw new Exception('No se ha podido subir archivo ficha');
@@ -100,19 +98,22 @@ if ($_POST['registro'] == "eliminar") {
 }
 
 if ($_POST['registro'] == "actualizar") {
+    
+    $nombre = $_POST['nombre'];
+    $subarea_perteneciente = $_POST['subarea_perteneciente'];
 
     /*REALIZAR LA OPERACIÓN DE ACTUALIZAR*/
     try {
         $respuesta = "";
-        //obtener iniciales
-        $iniciales_proceso = obtener_iniciales($_POST['nombre']);
+
+        //Verifica que se hayan cambiado el numero de actores
         if (intval($_POST['no_actores_actual']) != intval($_POST['numero_actores'])) {
             $respuesta = borrar_actores_procesos($objetoPDO, $_POST['id_proceso']);
         }
 
         $dir_diagrama = "";
         if ($_FILES["diagrama"]["name"]) {
-            $_FILES["diagrama"]["name"] = "diagrama-".$subarea_perteneciente."-".$iniciales_proceso.".png";
+            $_FILES["diagrama"]["name"] = "diagrama_".$subarea_perteneciente."_".strtr($nombre," ","_").".png";
             $dir_diagrama = "../procesos/por_subareas/".basename($_FILES['diagrama']['name']);
             if (!move_uploaded_file($_FILES['diagrama']['tmp_name'], $dir_diagrama)) {
                 throw new Exception('No se ha podido subir el diagrama');
@@ -124,7 +125,7 @@ if ($_POST['registro'] == "actualizar") {
         //carga la ficha tecnica
         $ruta_ficha = "";
         if ($_FILES["ficha"]["size"] > 0) {
-            $_FILES["ficha"]["name"] = "ficha-".$subarea_perteneciente."-".$iniciales_proceso.".pdf";
+            $_FILES["ficha"]["name"] = "ficha_".$subarea_perteneciente."_".strtr($nombre," ","_").".pdf";
             $ruta_ficha ="../procesos/por_subareas/".basename($_FILES['ficha']['name']);
             if (!move_uploaded_file($_FILES['ficha']['tmp_name'], $ruta_ficha)) {
                 throw new Exception('No se ha podido subir archivo ficha');
@@ -157,15 +158,6 @@ if ($_POST['registro'] == "actualizar") {
     }
 }
 
-function obtener_iniciales($data)
-{
-    $palabras = explode(" ", $data);
-    $iniciales = "diagrama-proceso-";
-    foreach ($palabras as $palabra) {
-        $iniciales .= substr($palabra, 0, 1);
-    }
-    return $iniciales;
-}
 
 function borrar_actores_procesos($objetoPDO, $id_proceso)
 {
