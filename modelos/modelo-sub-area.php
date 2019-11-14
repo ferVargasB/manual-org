@@ -14,7 +14,7 @@ if ($_POST['registro'] == 'nuevo') {
         //carga el diagrama del area
         $dir_diagrama = "";
         if ( $_FILES["diagrama"]["size"] > 0 ){
-            $_FILES["diagrama"]["name"] = "diagrama-" . $iniciales_area . ".pdf";
+            $_FILES["diagrama"]["name"] = "diagrama_".$area."_".strtr($nombre," ","_"). ".pdf";
             $dir_diagrama = basename($_FILES['diagrama']['name']);
             if (!move_uploaded_file($_FILES['diagrama']['tmp_name'], "../diagramas/sub_areas/" . $dir_diagrama)) {
                 throw new Exception('No se ha podido subir el diagrama');
@@ -23,14 +23,14 @@ if ($_POST['registro'] == 'nuevo') {
 
 
         //carga el documento perfil de puesto
-        $_FILES["perfil-puesto"]["name"] = "perfil-" . $iniciales_area . ".pdf";
+        $_FILES["perfil-puesto"]["name"] = "perfil_".$area."_".strtr($nombre," ","_").".pdf";
         $dir_perfil = basename($_FILES['perfil-puesto']['name']);
         if (!move_uploaded_file($_FILES['perfil-puesto']['tmp_name'], "../perfiles-pdf/sub_areas/" . $dir_perfil)) {
             throw new Exception('No se ha podido subir un el perfil de puesto');
         }
 
         //carga el documento atribucion
-        $_FILES["atribucion"]["name"] = "atribucion-" . $iniciales_area . ".pdf";
+        $_FILES["atribucion"]["name"] = "atribucion-".$area."_".strtr($nombre," ","_").".pdf";
         $dir_atribucion = basename($_FILES['atribucion']['name']);
         if (!move_uploaded_file($_FILES['atribucion']['tmp_name'], "../atribuciones-pdf/sub_areas/" . $dir_atribucion)) {
             throw new Exception('No se ha podido subir un archivo');
@@ -105,7 +105,7 @@ if ($_POST['registro'] == "actualizar") {
         //actualiza el diagrama del area si se subió
         $dir_diagrama = "";
         if ($_FILES["diagrama"]["size"] > 0) {
-            $_FILES["diagrama"]["name"] = "diagrama-".$iniciales_area . ".png";
+            $_FILES["diagrama"]["name"] = "diagrama_".$area."_".strtr($nombre," ","_").".png";
             $dir_diagrama = basename($_FILES['diagrama']['name']);
             if (!move_uploaded_file($_FILES['diagrama']['tmp_name'], "../diagramas/sub_areas/" . $dir_diagrama)) {
                 throw new Exception('No se ha podido subir el diagrama');
@@ -118,7 +118,7 @@ if ($_POST['registro'] == "actualizar") {
         //actualiza el documento perfil de puesto
         $dir_perfil = "";
         if ($_FILES["perfil-puesto"]["size"] > 0) {
-            $_FILES["perfil-puesto"]["name"] = "perfil-".$iniciales_area . ".pdf";
+            $_FILES["perfil-puesto"]["name"] = "perfil_".$area."_".strtr($nombre," ","_").".pdf";
             $dir_perfil = basename($_FILES['perfil-puesto']['name']);
             if (!move_uploaded_file($_FILES['perfil-puesto']['tmp_name'], "../perfiles-pdf/sub_areas/" . $dir_perfil)) {
                 throw new Exception('No se ha podido subir el perfil');
@@ -131,7 +131,7 @@ if ($_POST['registro'] == "actualizar") {
         //actualiza el documento atribucion
         $dir_atribucion = "";
         if ($_FILES["atribucion"]["size"] > 0) {
-            $_FILES["atribucion"]["name"] = "atribucion-".$iniciales_area . ".pdf";
+            $_FILES["atribucion"]["name"] = "atribucion_".$area."_".strtr($nombre," ","_").".pdf";
             $dir_atribucion = basename($_FILES['atribucion']['name']);
             if (!move_uploaded_file($_FILES['atribucion']['tmp_name'], "../atribuciones-pdf/sub_areas/" . $dir_atribucion)) {
                 throw new Exception('No se ha podido subir la atribucion');
@@ -142,7 +142,7 @@ if ($_POST['registro'] == "actualizar") {
 
 
         //guardar todos los campos en la bd
-        $stmn = $objetoPDO->prepare("UPDATE areas SET nombre=:nombre,ruta_perfil_puesto=:perfil,ruta_atribucion=:atribucion,ruta_diagrama=:diagrama,area_perteneciente=:area WHERE id_subarea=:id");
+        $stmn = $objetoPDO->prepare("UPDATE sub_areas SET nombre=:nombre,ruta_perfil_puesto=:perfil,ruta_atribucion=:atribucion,ruta_diagrama=:diagrama,area_perteneciente=:area WHERE id_subarea=:id");
         $stmn->bindParam(":nombre", $nombre);
         $stmn->bindParam(":perfil", $dir_perfil);
         $stmn->bindParam(":atribucion", $dir_atribucion);

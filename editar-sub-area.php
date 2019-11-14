@@ -50,7 +50,7 @@
                         }
                         ?>
                         <!-- FIN CODIGO PHP -->
-                        <form role="form" enctype="multipart/form-data" name="guardar-registro" id="guardar-registro" method="post" action="modelos/modelo-area.php">
+                        <form role="form" enctype="multipart/form-data" name="guardar-registro" id="guardar-registro" method="post" action="modelos/modelo-sub-area.php">
                             <div class="box-body">
                                 <div class="form-group">
                                     <label for="nombre">Nombre de la Sub Área:</label>
