@@ -37,7 +37,7 @@
                         <h3 class="box-title">Crear Proceso</h3>
                     </div>
                     <div class="box-body">
-                        <form role="form" name="guardar-registro" id="guardar-registro" method="post" action="modelos/modelo-proceso.php" enctype="multipart/form-data">
+                        <form role="form" name="guardar-registro" id="guardar-registro" method="post" action="modelos/modelo-proceso-dependencia.php" enctype="multipart/form-data">
                             <div class="box-body" id="div_proceso">
                                 <div class="form-group">
                                     <label for="nombre">Nombre:</label>

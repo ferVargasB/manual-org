@@ -63,29 +63,6 @@
                   </select>
                 </div>
                 <div class="form-group">
-                  <label for="habilitar_dependencia">¿Habilitar para dependencia?</label>
-                  <input type="checkbox" name="habilitar_dependencia" id="habilitar_dependencia">
-                </div>
-                <div class="form-group">
-                  <label for="area_perteneciente">Dependencia:</label>
-                  <select name="dependencia_perteneciente" id="dependencia_perteneciente" class="form-control" disabled>
-                    <!-- Codigo PHP  -->
-                    <?php
-                    try {
-                      $stmt = $objetoPDO->prepare("SELECT id_dependencia,nombre FROM dependencias ORDER BY nombre");
-                      $stmt->execute();
-                      $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                      foreach ($resultado as $row) { ?>
-                        <option value="<?php echo $row['id_dependencia']; ?>"><?php echo $row["nombre"]; ?></option>
-                    <?php }
-                    } catch (Exception $th) {
-                      throw $e->getMessage();
-                    }
-                    ?>
-                    <!-- Codigo PHP -->
-                  </select>
-                </div>
-                <div class="form-group">
                   <label for="diagrama">Cargar el diagrama:</label>
                   <input type="file" id="diagrama" name="diagrama" accept=".png">
                 </div>
