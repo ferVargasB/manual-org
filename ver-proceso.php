@@ -80,7 +80,7 @@
             <div class="box-footer">
               <?php
               if ($ida != 0 && $idp != 0) { ?>
-                <a href="lista-proceso-area.php?id=<?php echo $ida; ?>&idp=<?php echo $idp; ?>" class="btn btn-primary active director" role="button" aria-pressed="true">Regresar</a>
+                <a href="lista-proceso-area.php?ida=<?php echo $ida; ?>&idp=<?php echo $idp; ?>" class="btn btn-primary active director" role="button" aria-pressed="true">Regresar</a>
               <?php } else { ?>
                 <a href="lista-procesos.php" class="btn btn-primary active" role="button" aria-pressed="true">Regresar</a>
               <?php }

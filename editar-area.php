@@ -65,9 +65,13 @@
                       $stmt = $objetoPDO->prepare("SELECT id_dependencia,nombre FROM dependencias ORDER BY nombre");
                       $stmt->execute();
                       $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                      foreach ($resultado as $row) { ?>
-                        <option value="<?php echo $row['id_dependencia']; ?>"><?php echo $row["nombre"]; ?></option>
-                    <?php }
+                      foreach ($resultado as $row) { 
+                        if ( $row['id_dependencia'] == $registro[0]['dependencia_perteneciente'] ) { ?>
+                          <option value="<?php echo $row['id_dependencia']; ?>" selected><?php echo $row["nombre"]; ?></option>
+                        <?php } else { ?>
+                          <option value="<?php echo $row['id_dependencia']; ?>"><?php echo $row["nombre"]; ?></option>
+                        <?php }
+                      }
                     } catch (\Throwable $th) {
                       //throw $th;
                     }
