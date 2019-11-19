@@ -39,7 +39,7 @@
           <div class="box-body text-center animated fadeIn" id="chart-container">
             <div class="row">
               <div class="col-lg-10" style="margin-bottom:5px;">
-                <img src="assets/img/organigrama_general.png" alt="..." class="img-thumbnail" id="diagrama">
+                <img src="assets/img/organigrama_general.png" alt="..." class="img-thumbnail imgSmall" id="diagrama">
               </div>
               <div class="col-lg-2 text-center">
                 <div class="callout callout-success">
@@ -77,6 +77,7 @@
     </div>
     <!-- /.content-wrapper -->
 
+    <div id="overlay"></div> 
 
     <?php
     include_once 'templates/footer.php';
@@ -105,6 +106,8 @@
   <script src="js/demo.js"></script>
 
   <script src="js/organigrama-general.js"></script>
+
+  <script src="js/modal.js"></script>
 
 </body>
 

@@ -28,6 +28,9 @@
   <!-- CSS para esta interfaz -->
   <link rel="stylesheet" href="css/crear-admin.css">
 
+  <!-- CSS para el modal -->
+  <link rel="stylesheet" href="css/modal.css">
+
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>

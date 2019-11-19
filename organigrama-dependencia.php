@@ -106,6 +106,8 @@
     </div>
     <!-- /.content-wrapper -->
 
+    <div id="overlay"></div> 
+
     <?php
     include_once 'templates/footer.php';
     ?>
@@ -133,6 +135,7 @@
   <!-- <script src="js/demo.js"></script> -->
   <!-- EL Script que contiene todas las funciones de este modulo -->
   <script src="js/organigrama-dependencia.js"></script>
+  <script src="js/modal.js"></script>
 </body>
 
 </html>
