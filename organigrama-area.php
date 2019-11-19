@@ -48,15 +48,15 @@
         <h1 id="nombre_area"><?php echo $data_area[0]['nombre']; ?></h1>
         <ol class="breadcrumb">
           <li><a href="organigrama.php"><i class="fa fa-home"></i> Organigrama General</a></li>
-          <li><a href="organigrama-dependencia.php?id=<?php echo $idp;?>"><i></i> <?php echo $data_area[0]["depenNombre"];?></a></li>
-          <li class="active"><?php echo $data_area[0]["nombre"];?></li>
+          <li><a href="organigrama-dependencia.php?id=<?php echo $idp; ?>"><i></i> <?php echo $data_area[0]["depenNombre"]; ?></a></li>
+          <li class="active"><?php echo $data_area[0]["nombre"]; ?></li>
         </ol>
         <h4><a href="<?php echo './perfiles-pdf/areas/' . $data_area[0]['ruta_perfil_puesto']; ?>" target="_blank" id="perfil_puesto">Perfil de Puesto</a></h4>
         <h4><a href="<?php echo './atribuciones-pdf/areas/' . $data_area[0]['ruta_atribucion']; ?>" target="_blank" id="atribuciones">Atribuciones</a></h4>
         <?php if ($data_area[0]["noProcesos"] != 0) { ?>
           <h4><a href="lista-proceso-area.php?ida=<?php echo $ida; ?>&idp=<?php echo $idp; ?>">Procesos</a></h4>
-        <?php } ?>  
-        </section>
+        <?php } ?>
+      </section>
       <!-- Main content -->
       <section class="content">
         <input type="hidden" name="id_area" id="id_area" value="<?php echo $ida; ?>">
@@ -75,9 +75,9 @@
                   $stmn = $objetoPDO->prepare("SELECT ruta_diagrama FROM dependencias WHERE id_dependencia = :id");
                   $stmn->bindParam(":id", $idp);
                   $stmn->execute();
-                  $data = $stmn->fetchAll(PDO::FETCH_ASSOC);
-                ?>
-                  <img src="<?php echo './diagramas/'.$data[0]['ruta_diagrama'];?>" alt="..." class="img-thumbnail" id="diagrama">
+                  $data_diagrama = $stmn->fetchAll(PDO::FETCH_ASSOC);
+                  ?>
+                  <img src="<?php echo './diagramas/' . $data_diagrama[0]['ruta_diagrama']; ?>" alt="..." class="img-thumbnail" id="diagrama">
                 <?php } else { ?>
                   <img src="<?php echo './diagramas/areas/' . $data_area[0]['ruta_diagrama']; ?>" alt="..." class="img-thumbnail" id="diagrama">
                 <?php } ?>
@@ -88,20 +88,15 @@
                 </div>
                 <?php
                 try {
-                  if ($data) {
+                  if (!empty($data)) {
                     foreach ($data as $row) { ?>
-                      <a href="organigrama-subarea.php?<?php echo 'ids='.$row['id_subarea'].'&ida='.$ida.'&idp='.$idp;?>" class="btn btn-default btn-block" style="margin-bottom:4px;white-space: normal;"><?php echo $row["nombre"]; ?></a> 
+                      <a href="organigrama-subarea.php?<?php echo 'ids=' . $row['id_subarea'] . '&ida=' . $ida . '&idp=' . $idp; ?>" class="btn btn-default btn-block" style="margin-bottom:4px;white-space: normal;"><?php echo $row["nombre"]; ?></a>
                 <?php }
-                  } else {
-                    $respuesta = array(
-                      "respuesta" => "no_existe"
-                    );
                   }
                 } catch (Throwable $e) {
                   echo $e->getMessage();
                 }
                 ?>
-
               </div>
             </div>
           </div>
