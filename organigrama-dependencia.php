@@ -21,10 +21,10 @@
     $stmn->execute();
     $data = $stmn->fetchAll(PDO::FETCH_ASSOC);
     if (!$data) { ?>
-      <div class="callout callout-danger">
+<!--       <div class="callout callout-danger">
         <h4>Esta dependencía no tiene direcciones</h4>
         <p>Por favor, agregarlas</p>
-      </div>
+      </div> -->
     <?php } else { ?>
 
     <?php }
@@ -51,12 +51,12 @@
         <h1 id="nombre_dependencia"><?php echo $dependenciaData[0]['nombre']; ?></h1>
         <ol class="breadcrumb">
           <li><a href="organigrama.php"><i class="fa fa-home"></i> Organigrama General</a></li>
-          <li class="active"><?php echo $dependenciaData[0]["nombre"];?></li>
+          <li class="active"><?php echo $dependenciaData[0]["nombre"]; ?></li>
         </ol>
         <h4><a href="<?php echo './objetivos-pdf/generales/' . $dependenciaData[0]['ruta_objetivo_general']; ?>" target="_blank" id="objetivo_general">Objetivo General</a></h4>
         <h4><a href="<?php echo './perfiles-pdf/dependencias/' . $dependenciaData[0]['ruta_perfil_puesto']; ?>" target="_blank" id="perfil_puesto">Perfil de Puesto</a></h4>
         <h4><a href="<?php echo './atribuciones-pdf/dependencias/' . $dependenciaData[0]['ruta_atribuciones']; ?>" target="_blank" id="atribuciones">Atribuciones</a></h4>
-        <?php if ( $dependenciaData[0]["noProcesos"] != "0" ) { ?> 
+        <?php if ($dependenciaData[0]["noProcesos"] != "0") { ?>
           <h4><a href="lista-procesos-dependencia.php?idp=<?php echo $dependenciaData[0]['id_dependencia']; ?>">Ver Procesos</a></h4>
         <?php } ?>
       </section>
@@ -72,7 +72,7 @@
             <!-- <ul id="ul-data" hidden></ul> -->
             <div class="row">
               <div class="col-lg-10" style="margin-bottom:5px;">
-                <img src="<?php echo './diagramas/' . $dependenciaData[0]['ruta_diagrama']; ?>" alt="..." class="img-thumbnail" id="diagrama">
+                <img src="<?php echo './diagramas/' . $dependenciaData[0]['ruta_diagrama']; ?>" alt="Organigrama" class="img-thumbnail" id="myImg">
               </div>
               <div class="col-lg-2">
                 <div class="callout callout-success">
@@ -106,7 +106,19 @@
     </div>
     <!-- /.content-wrapper -->
 
-    <div id="overlay"></div> 
+ <!--    <div id="overlay"></div> -->
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+
+      <!-- The Close Button -->
+      <span class="close">&times;</span>
+
+      <!-- Modal Content (The Image) -->
+      <img class="modal-content" id="img01">
+
+      <!-- Modal Caption (Image Text) -->
+      <div id="caption">Diagrama</div>
+    </div>
 
     <?php
     include_once 'templates/footer.php';

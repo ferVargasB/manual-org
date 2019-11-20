@@ -19,7 +19,7 @@ if ($_POST['registro'] == 'nuevo' )
         //PARTE PARA SUBIR LOS DOCUMENTOS
 
         //carga la tribucion del actor
-        $_FILES["atribucion"]["name"] = $iniciales_director.".pdf";
+        $_FILES["atribucion"]["name"] = "director_".clean($nombre).".pdf";
         $ruta_atribucion = "../atribuciones-pdf/funcionarios/".basename($_FILES['atribucion']['name']);
         if (move_uploaded_file($_FILES['atribucion']['tmp_name'], $ruta_atribucion)) {
 
@@ -102,19 +102,15 @@ if ($_POST['registro'] == "actualizar")
 
         //die(var_dump($_POST));
         //carga el documento atribucion
-        $_FILES["atribucion"]["name"] = $iniciales_area.".pdf";
+        $_FILES["atribucion"]["name"] = "director_".clean($nombre).".pdf";
         $dir_atribucion = "../atribuciones-pdf/funcionarios/".basename($_FILES['atribucion']['name']);
-        if ($_FILES["atribucion"]["size"] == 0) {
-        	$dir_atribucion= $ruta_def;
-        }else {
-        	if (move_uploaded_file($_FILES['atribucion']['tmp_name'], $dir_atribucion)) {
-
-        	} else {
-            	throw new Exception('No se ha podido subir un archivo');
-        	}
-
+        if ($_FILES["atribucion"]["size"] > 0) {
+            if ( !move_uploaded_file($_FILES['atribucion']['tmp_name'], $dir_atribucion)) {
+                throw new Exception('No se ha podido subir un archivo');
+        	} 
+        } else {
+            $dir_atribucion= $ruta_def;
         }
-        
 
         //guardar todos los campos en la bd
         $stmn = $objetoPDO->prepare("UPDATE actores SET nombre=:nombre,ruta_atribucion=:atribucion WHERE id_actor=:id");
@@ -155,4 +151,11 @@ function obtener_iniciales($data)
     }
     return $iniciales;
 }
+
+function clean($string) 
+{
+    $string = str_replace(' ', '_', $string); // Replaces all spaces with hyphens.
+ 
+    return preg_replace('/[^A-Za-z0-9\-]/', '', $string); // Removes special chars.
+ }
 ?>

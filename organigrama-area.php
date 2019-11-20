@@ -77,9 +77,9 @@
                   $stmn->execute();
                   $data_diagrama = $stmn->fetchAll(PDO::FETCH_ASSOC);
                   ?>
-                  <img src="<?php echo './diagramas/' . $data_diagrama[0]['ruta_diagrama']; ?>" alt="..." class="img-thumbnail" id="diagrama">
+                  <img src="<?php echo './diagramas/' . $data_diagrama[0]['ruta_diagrama']; ?>" alt="Organigrama" class="img-thumbnail" id="myImg">
                 <?php } else { ?>
-                  <img src="<?php echo './diagramas/areas/' . $data_area[0]['ruta_diagrama']; ?>" alt="..." class="img-thumbnail" id="diagrama">
+                  <img src="<?php echo './diagramas/areas/' . $data_area[0]['ruta_diagrama']; ?>" alt="Organigrama" class="img-thumbnail" id="myImg">
                 <?php } ?>
               </div>
               <div class="col-lg-2">
@@ -113,7 +113,19 @@
     </div>
     <!-- /.content-wrapper -->
 
-    <div id="overlay"></div> 
+    <!-- <div id="overlay"></div> -->
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+
+      <!-- The Close Button -->
+      <span class="close">&times;</span>
+
+      <!-- Modal Content (The Image) -->
+      <img class="modal-content" id="img01">
+
+      <!-- Modal Caption (Image Text) -->
+      <div id="caption">Diagrama</div>
+    </div>
 
     <?php
     include_once 'templates/footer.php';

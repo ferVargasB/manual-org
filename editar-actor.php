@@ -58,7 +58,7 @@
                 <div class="form-group">
                   <label for="atribucion">Atribución:</label>
                   <input type="file" name="atribucion" accept=".pdf">
-                  <a href="<?php echo $usuario_data['ruta_atribucion'];?>" target="_blank">Ver</a>
+                  <a href="<?php echo 'admin_area/'.$usuario_data['ruta_atribucion'];?>" target="_blank">Ver</a>
                 </div>
               <?php } ?>  
             </div>

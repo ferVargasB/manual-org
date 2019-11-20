@@ -39,7 +39,7 @@
           <div class="box-body text-center animated fadeIn" id="chart-container">
             <div class="row">
               <div class="col-lg-10" style="margin-bottom:5px;">
-                <img src="assets/img/organigrama_general.png" alt="..." class="img-thumbnail imgSmall" id="diagrama">
+                <img id="myImg" src="assets/img/organigrama_general.png" alt="Organigrama" class="img-thumbnail imgSmall">
               </div>
               <div class="col-lg-2 text-center">
                 <div class="callout callout-success">
@@ -77,8 +77,22 @@
     </div>
     <!-- /.content-wrapper -->
 
-    <div id="overlay"></div> 
+<!--     <div id="overlay"></div> -->
 
+    <!-- Trigger the Modal -->
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+
+      <!-- The Close Button -->
+      <span class="close">&times;</span>
+
+      <!-- Modal Content (The Image) -->
+      <img class="modal-content" id="img01">
+
+      <!-- Modal Caption (Image Text) -->
+      <div id="caption">Diagrama</div>
+    </div>
     <?php
     include_once 'templates/footer.php';
     ?>

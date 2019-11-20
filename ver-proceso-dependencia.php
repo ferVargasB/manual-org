@@ -106,7 +106,7 @@
                             if ($ida != 0 && $idp != 0) { ?>
                                 <a href="organigrama-area.php?ida=<?php echo $ida; ?>&idp=<?php echo $idp; ?>" class="btn btn-primary active director" role="button" aria-pressed="true">Regresar</a>
                             <?php } else { ?>
-                                <a href="lista-procesos-dependencia.php?idp=<?php echo $idp;?>" class="btn btn-primary active" role="button" aria-pressed="true">Regresar</a>
+                                <a href="lista-procesos.php?idp=<?php echo $idp;?>" class="btn btn-primary active" role="button" aria-pressed="true">Regresar</a>
                             <?php }
                             ?>
                         </div>

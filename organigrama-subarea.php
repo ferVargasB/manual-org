@@ -45,7 +45,7 @@
         <ol class="breadcrumb">
           <li><a href="organigrama.php"><i class="fa fa-home"></i> Organigrama General</a></li>
           <li><a href="organigrama-dependencia.php?id=<?php echo $idp; ?>"><i></i> <?php echo $data_area[0]["nombre_depen"]; ?></a></li>
-          <li><a href="organigrama-area.php?ida=<?php echo $ida.'&idp='.$idp;?>"><i></i> <?php echo $data_area[0]["nombre_area"];?></a></li>
+          <li><a href="organigrama-area.php?ida=<?php echo $ida . '&idp=' . $idp; ?>"><i></i> <?php echo $data_area[0]["nombre_area"]; ?></a></li>
           <li class="active"><?php echo $data_area[0]["nombre"]; ?></li>
         </ol>
         <h4><a href="<?php echo './perfiles-pdf/sub_areas/' . $data_area[0]['ruta_perfil_puesto']; ?>" target="_blank" id="perfil_puesto">Perfil de Puesto</a></h4>
@@ -73,9 +73,9 @@
                   $stmn->execute();
                   $data = $stmn->fetchAll(PDO::FETCH_ASSOC);
                   ?>
-                  <img src="<?php echo './diagramas/' . $data[0]['ruta_diagrama']; ?>" alt="..." class="img-thumbnail" id="diagrama">
+                  <img src="<?php echo './diagramas/' . $data[0]['ruta_diagrama']; ?>" alt="Organigrama" class="img-thumbnail" id="myImg">
                 <?php } else { ?>
-                  <img src="<?php echo './diagramas/sub_areas/' . $data_area[0]['ruta_diagrama']; ?>" alt="..." class="img-thumbnail" id="diagrama">
+                  <img src="<?php echo './diagramas/sub_areas/' . $data_area[0]['ruta_diagrama']; ?>" alt="Organigrama" class="img-thumbnail" id="myImg">
                 <?php } ?>
               </div>
             </div>
@@ -93,7 +93,18 @@
     </div>
     <!-- /.content-wrapper -->
 
-    <div id="overlay"></div> 
+<!--     <div id="overlay"></div> -->
+    <div id="myModal" class="modal">
+
+      <!-- The Close Button -->
+      <span class="close">&times;</span>
+
+      <!-- Modal Content (The Image) -->
+      <img class="modal-content" id="img01">
+
+      <!-- Modal Caption (Image Text) -->
+      <div id="caption"></div>
+    </div>
 
     <?php
     include_once 'templates/footer.php';

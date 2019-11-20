@@ -149,7 +149,7 @@ include_once 'templates/header.php';
                             <td><?php echo $row["numero_actores"]; ?></td>
                             <td><?php echo $row["nombre"]; ?></td>
                             <td>
-                              <a href="editar-proceso.php?id=<?php echo $row['id_proceso'] ?>" class="badge badge-success">Editar Proceso</a>
+                              <a href="editar-proceso-dependencia.php?id=<?php echo $row['id_proceso'] ?>" class="badge badge-success">Editar Proceso</a>
                               <input type="button" tipo="dependencia" class="badge badge-success borrar_registro" data-id="<?php echo $row['id_proceso']; ?>" value="Borrar Proceso">
                               <a href="ver-proceso-dependencia.php?id=<?php echo $row['id_proceso'] ?>" class="badge badge-success">Ver Proceso</a>
                               <a href="" tipo="dependencia" data-dependencia="<?php echo $row['id_proceso']; ?>" class="badge badge-success borrar_registro">Borrar Proceso</a>

@@ -122,6 +122,7 @@ function crear_listado_actores(no_actores)
         var select_item = create_select_element(indice)
         var col_addActor = get_col_add_actor(indice);
         //var col_rmActor = get_col_remove_actor(indice);
+        row_actor.appendChild(document.createElement("br"));
         row_actor.appendChild(select_item);
         row_actor.appendChild(col_addActor);
         //row_actor.appendChild(col_rmActor);
@@ -143,6 +144,7 @@ function get_col_add_actor(indice)
     btn_add_actor.setAttribute("type","button");
     btn_add_actor.setAttribute("class","btn btn-info addActor");
     btn_add_actor.setAttribute("value","Añadir Actor");
+    btn_add_actor.style.width = "100%";
     btn_add_actor.setAttribute("no-actor",indice);
     btn_add_actor.addEventListener("click", add_actor);
 

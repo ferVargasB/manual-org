@@ -45,4 +45,53 @@ if ($_GET['numero_servicio'] == 1)
     }
 }
 
+if ($_GET['numero_servicio'] == 2) 
+{  
+    $respuesta = array();
+    $id_proceso = $_POST['id_proceso'];
+    try {
+        if(!isset($_POST['id_proceso']))
+        {
+            throw new Exception('Existe un error, volver a intentarlo');
+        }
+        //guardar todos los campos en la bd
+        $stmn = $objetoPDO->prepare("SELECT 
+        pd.id_proceso,
+        pd.nombre AS nombreProceso,
+        d.nombre AS nombreDependencia,
+        pad.id_actor,
+        ac.nombre AS nombreActor
+    FROM
+        actores AS ac
+            INNER JOIN
+        procesos_actores_dependencias AS pad ON ac.id_actor = pad.id_actor
+            INNER JOIN
+        procesos_dependencias AS pd ON pad.id_proceso_dependencia = pd.id_proceso
+            INNER JOIN
+        dependencias AS d ON pd.dependencia_perteneciente = d.id_dependencia
+    WHERE
+        pad.id_proceso_dependencia = :id_proceso;");
+        $stmn->bindParam(":id_proceso",$id_proceso);
+        $respuesta;
+        if($stmn->execute())
+        {
+            $id_proceso = $objetoPDO->lastInsertId();
+            $respuesta = $stmn->fetchAll(PDO::FETCH_ASSOC);
+        }
+        else
+        {
+            $respuesta['respuesta'] = 'error';
+        }
+        $conn = null;
+        echo json_encode($respuesta);
+    } catch (Exception $e) {
+        $respuesta = array(
+            "respuesta" => "error",
+            "mensaje" => $e->getMessage()
+        );
+
+        echo json_encode($respuesta);
+    }
+}
+
 ?>
