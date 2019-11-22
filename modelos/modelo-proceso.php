@@ -104,6 +104,8 @@ if ($_POST['registro'] == "actualizar") {
 
     /*REALIZAR LA OPERACIÓN DE ACTUALIZAR*/
     try {
+        $area = $_POST["area_perteneciente"];
+        $nombre = $_POST["nombre"];
         $respuesta = "";
         //obtener iniciales
         $iniciales_proceso = obtener_iniciales($_POST['nombre']);
