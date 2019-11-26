@@ -17,7 +17,7 @@ if ($_POST['registro'] == 'nuevo' && isset($_POST['area_perteneciente'])) {
         //carga el diagrama del proceso 
         $_FILES["diagrama"]["name"] = "diagrama_".$area."_".strtr($nombre," ","_").".png";
         $ruta_diagrama = "../procesos/por_areas/" . basename($_FILES['diagrama']['name']);
-        if (move_uploaded_file($_FILES['diagrama']['tmp_name'], $ruta_diagrama)) { } else {
+        if (!move_uploaded_file($_FILES['diagrama']['tmp_name'], $ruta_diagrama)) { 
             throw new Exception('No se ha podido subir archivo diagrama');
         }
 
@@ -96,7 +96,6 @@ if ($_POST['registro'] == "eliminar") {
             "respuesta" => $e->getMessage()
         );
     }
-
     die(json_encode($respuesta));
 }
 
@@ -185,7 +184,6 @@ function borrar_actores_procesos($objetoPDO, $id_proceso)
         $respuesta['respuesta'] = 'error';
         $respuesta['mensaje'] = $e->getMessage();
     }
-
     return $respuesta;
 }
 
