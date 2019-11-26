@@ -14,7 +14,7 @@ if ($_POST['registro'] == 'nuevo') {
         //carga el diagrama del area
         $dir_diagrama = "";
         if ( $_FILES["diagrama"]["size"] > 0 ){
-            $_FILES["diagrama"]["name"] = "diagrama_".$dependencia_perteneciente."_".strtr($nombre," ","_").".png";
+            $_FILES["diagrama"]["name"] = "diagrama_".$id_dependencia."_".strtr($nombre," ","_").".png";
             $dir_diagrama = basename($_FILES['diagrama']['name']);
             if (!move_uploaded_file($_FILES['diagrama']['tmp_name'], "../diagramas/areas/" . $dir_diagrama)) {
                 throw new Exception('No se ha podido subir el diagrama');
@@ -22,14 +22,14 @@ if ($_POST['registro'] == 'nuevo') {
         } 
 
         //carga el documento perfil de puesto
-        $_FILES["perfil-puesto"]["name"] = "perfil_" .$dependencia_perteneciente."_".strtr($nombre," ","_").".pdf";
+        $_FILES["perfil-puesto"]["name"] = "perfil_" .$id_dependencia."_".strtr($nombre," ","_").".pdf";
         $dir_perfil = basename($_FILES['perfil-puesto']['name']);
         if (!move_uploaded_file($_FILES['perfil-puesto']['tmp_name'], "../perfiles-pdf/areas/" . $dir_perfil)) {
             throw new Exception('No se ha podido subir un el perfil de puesto');
         }
 
         //carga el documento atribucion
-        $_FILES["atribucion"]["name"] = "atribucion_".$dependencia_perteneciente."_".strtr($nombre," ","_").".pdf";
+        $_FILES["atribucion"]["name"] = "atribucion_".$id_dependencia."_".strtr($nombre," ","_").".pdf";
         $dir_atribucion = basename($_FILES['atribucion']['name']);
         if (!move_uploaded_file($_FILES['atribucion']['tmp_name'], "../atribuciones-pdf/areas/" . $dir_atribucion)) {
             throw new Exception('No se ha podido subir un archivo');
@@ -66,23 +66,49 @@ if ($_POST['registro'] == 'nuevo') {
 // Cuando se elimina un registro 
 if ($_POST['registro'] == "eliminar") {
     $id = $_POST['id'];
-
     try {
-        $stmn = $objetoPDO->prepare("DELETE FROM areas WHERE id_area = :id");
-        $stmn->bindParam(":id", $id);
-        if ($stmn->execute()) {
-            $respuesta = array(
-                "respuesta" => "exito",
-                "id_eliminado" => $id,
-            );
-        } else {
-            $respuesta = array(
-                "respuesta" => "error",
-                "id_eliminado" => $id,
-            );
+        //Se obtienen todos los procesos del area
+        $stm = $objetoPDO->prepare("SELECT id_proceso FROM procesos WHERE area_perteneciente = :id");
+        $stm->bindParam("id", $id);
+        $stm->execute();
+        $procesos_area = $stm->fetchAll(PDO::FETCH_ASSOC);
+
+        //Se borran los actores ligados a cada proceso
+        foreach ($procesos_area as $proceso) {
+            $objetoPDO->exec("DELETE FROM procesos_actores WHERE id_proceso = " . $proceso['id_proceso']);
         }
-        $conn = null;
+
+        //Se borran los procesos ligados al area
+        $objetoPDO->beginTransaction();
+        $objetoPDO->exec("DELETE FROM procesos WHERE area_perteneciente = " . $id);
+
+        //Se obtiene informacion del area
+        $stm = $objetoPDO->prepare("SELECT id_area,nombre,ruta_perfil_puesto,ruta_atribucion,ruta_diagrama FROM areas WHERE id_area = :id");
+        $stm->bindParam("id", $id);
+        $stm->execute();
+        $data_tramite = $stm->fetchAll(PDO::FETCH_ASSOC);
+        if (!unlink('../diagramas/areas/' . $data_tramite[0]['ruta_diagrama'])) {
+            throw new Exception("Error al eliminar el diagrama");
+        }
+
+        if (!unlink('../perfiles-pdf/areas/' . $data_tramite[0]['ruta_perfil_puesto'])) {
+            throw new Exception("Error al eliminar el perfil");
+        }
+
+        if (!unlink('../atribuciones-pdf/areas/' . $data_tramite[0]['ruta_atribucion'])) {
+            throw new Exception("Error al eliminar la atribucion");
+        }
+
+        //Se borra el registro
+        $objetoPDO->exec("DELETE FROM areas WHERE id_area = " . $id);
+        $respuesta = array(
+            "respuesta" => "exito",
+            "id_area" => $id,
+        );
+
+        $objetoPDO->commit();
     } catch (Exception $e) {
+        $objetoPDO->rollBack();
         $respuesta = array(
             "respuesta" => $e->getMessage()
         );

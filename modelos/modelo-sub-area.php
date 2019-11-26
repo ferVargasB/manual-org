@@ -67,23 +67,44 @@ if ($_POST['registro'] == 'nuevo') {
 // Cuando se elimina un registro 
 if ($_POST['registro'] == "eliminar") {
     $id = $_POST['id'];
-
     try {
-        $stmn = $objetoPDO->prepare("DELETE FROM sub_areas WHERE id_subarea = :id");
-        $stmn->bindParam(":id", $id);
-        if ($stmn->execute()) {
-            $respuesta = array(
-                "respuesta" => "exito",
-                "id_eliminado" => $id,
-            );
-        } else {
-            $respuesta = array(
-                "respuesta" => "error",
-                "id_eliminado" => $id,
-            );
+        //Se obtienen todos los procesos de la sub area
+        $stm = $objetoPDO->prepare("SELECT id_proceso FROM procesos_subareas WHERE subarea_perteneciente = :id");
+        $stm->bindParam("id", $id);
+        $stm->execute();
+        $procesos_area = $stm->fetchAll(PDO::FETCH_ASSOC);
+
+        //Se borran los actores ligados a cada proceso
+        foreach ($procesos_area as $proceso) {
+            $objetoPDO->exec("DELETE FROM procesos_actores_subareas WHERE id_proceso_subarea = " . $proceso['id_proceso']);
         }
-        $conn = null;
+
+        //Se borran los procesos ligados al area
+        $objetoPDO->beginTransaction();
+        $objetoPDO->exec("DELETE FROM procesos_subareas WHERE subarea_perteneciente = " . $id);
+
+        //Se obtiene informacion del area
+        $stm = $objetoPDO->prepare("SELECT id_subarea,nombre,ruta_perfil_puesto,ruta_atribucion,ruta_diagrama FROM sub_areas WHERE id_subarea = :id");
+        $stm->bindParam("id", $id);
+        $stm->execute();
+        $data_tramite = $stm->fetchAll(PDO::FETCH_ASSOC);
+
+        unlink('../diagramas/sub_areas/' . $data_tramite[0]['ruta_diagrama']);
+
+        unlink('../perfiles-pdf/sub_areas/' . $data_tramite[0]['ruta_perfil_puesto']);
+
+        unlink('../atribuciones-pdf/sub_areas/' . $data_tramite[0]['ruta_atribucion']);
+
+        //Se borra el registro
+        $objetoPDO->exec("DELETE FROM sub_areas WHERE id_subarea = " . $id);
+        $respuesta = array(
+            "respuesta" => "exito",
+            "id_area" => $id,
+        );
+
+        $objetoPDO->commit();
     } catch (Exception $e) {
+        $objetoPDO->rollBack();
         $respuesta = array(
             "respuesta" => $e->getMessage()
         );

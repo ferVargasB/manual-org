@@ -71,7 +71,7 @@ include_once 'templates/header.php';
                                                         <td>
                                                             <a href="editar-sub-area.php?id=<?php echo $row['id_subarea'] ?>" class="badge badge-success">Editar Sub Área</a>
                                                             <a href="organigrama-subarea.php?ids=<?php echo $row['id_subarea'] . '&ida=' . $row['area_perteneciente'].'&idp='.$row['id_dependencia']; ?>" class="badge badge-success">Ver Organigrama</a>
-                                                            <a href="" class="badge badge-success borrar_registro" data-id="<?php echo $row['id_area']; ?>">Borrar Sub Área</a>
+                                                            <a href="" data-tipo="subarea" class="badge badge-success borrar_registro" data-id="<?php echo $row['id_subarea']; ?>">Borrar Sub Área</a>
                                                         </td>
                                                     </tr>
                                             <?php }
