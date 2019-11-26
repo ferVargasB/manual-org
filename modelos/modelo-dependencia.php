@@ -69,11 +69,13 @@ if ($_POST['registro'] == 'nuevo') {
 
 if ($_POST['registro'] == "eliminar") {
     $id = $_POST['id'];
-
     try {
-        $get_stmt = $objetoPDO->prepare("SELECT id_dependencia,nombre,ruta_objetivo_general,ruta_perfil_puesto,ruta_atribuciones,ruta_diagrama FROM dependencias WHERE id_dependencia = :id");
-        $get_stmt->bindParam(":id", $id);
-        $get_stmt->execute();
+        //Se borran los procesos ligados a la dependecnia
+        $objetoPDO->beginTransaction();
+        $objetoPDO->exec("DELETE FROM procesos_dependencias WHERE dependencia_perteneciente = ".$id);
+
+        //Se obtiene informacion del la dependencia
+        $get_stmt->execute("SELECT id_dependencia,nombre,ruta_objetivo_general,ruta_perfil_puesto,ruta_atribuciones,ruta_diagrama FROM dependencias WHERE id_dependencia = ".$id);
         $data_tramite = $get_stmt->fetchAll(PDO::FETCH_ASSOC);
         if(!unlink('../diagramas/'.$data_tramite[0]['ruta_diagrama'])){
             throw new Exception("Error al eliminar el diagrama");
@@ -94,21 +96,15 @@ if ($_POST['registro'] == "eliminar") {
             
         }
 
-        $stmn = $objetoPDO->prepare("DELETE FROM dependencias WHERE id_dependencia = :id");
-        $stmn->bindParam(":id", $id);
-        if ($stmn->execute()) {
-            $respuesta = array(
-                "respuesta" => "exito",
-                "id_dependencia" => $id,
-            );
-        } else {
-            $respuesta = array(
-                "respuesta" => "error",
-                "id_dependencia" => $id,
-            );
-        }
-        $conn = null;
+        $objetoPDO->exec("DELETE FROM dependencias WHERE id_dependencia = ".$id);
+        $respuesta = array(
+            "respuesta" => "exito",
+            "id_dependencia" => $id,
+        );
+        
+        $objetoPDO->commit();
     } catch (Exception $e) {
+        $objetoPDO->rollBack();
         $respuesta = array(
             "respuesta" => $e->getMessage()
         );

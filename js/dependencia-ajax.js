@@ -41,7 +41,6 @@ $(document).ready(function(){
     $(".borrar_registro").on("click", function(e){
         e.preventDefault();
         var id = $(this).attr("data-id");
-        console.log(id);
         Swal.fire({
             title: '¿Estás Seguro?',
             text: "El registro no se podrá recuperar",
