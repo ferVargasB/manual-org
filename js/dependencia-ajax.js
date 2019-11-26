@@ -43,7 +43,7 @@ $(document).ready(function(){
         var id = $(this).attr("data-id");
         Swal.fire({
             title: '¿Estás Seguro?',
-            text: "El registro no se podrá recuperar",
+            text: "El registro no se podrá recuperar y se borrarán los procesos asociados",
             type: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
