@@ -69,13 +69,15 @@ if ($_POST['registro'] == "eliminar") {
     $id = $_POST['id'];
     try {
         //Se obtienen todos los procesos de la sub area
-        $stm = $objetoPDO->prepare("SELECT id_proceso FROM procesos_subareas WHERE subarea_perteneciente = :id");
+        $stm = $objetoPDO->prepare("SELECT id_proceso,ruta_diagrama,ruta_ficha FROM procesos_subareas WHERE subarea_perteneciente = :id");
         $stm->bindParam("id", $id);
         $stm->execute();
         $procesos_area = $stm->fetchAll(PDO::FETCH_ASSOC);
 
         //Se borran los actores ligados a cada proceso
         foreach ($procesos_area as $proceso) {
+            unlink('../procesos/por_subareas/' . $proceso[0]['ruta_diagrama']);
+            unlink('../procesos/por_subareas/' . $proceso[0]['ruta_ficha']);
             $objetoPDO->exec("DELETE FROM procesos_actores_subareas WHERE id_proceso_subarea = " . $proceso['id_proceso']);
         }
 
