@@ -15,16 +15,16 @@ if ($_POST['registro'] == 'nuevo' && isset($_POST['dependencia_perteneciente']))
         $iniciales_proceso = obtener_iniciales($nombre);
         //PARTE PARA SUBIR LOS DOCUMENTOS
         //carga el diagrama del proceso 
-        $_FILES["diagrama"]["name"] = "diagrama_".$dependencia."_".strtr($nombre," ","_").".png";
+        $_FILES["diagrama"]["name"] = "diagrama_" . $dependencia . "_" . strtr($nombre, " ", "_") . ".png";
         $ruta_diagrama = "../procesos/por_dependencias/" . basename($_FILES['diagrama']['name']);
-        if (!move_uploaded_file($_FILES['diagrama']['tmp_name'], $ruta_diagrama)) { 
+        if (!move_uploaded_file($_FILES['diagrama']['tmp_name'], $ruta_diagrama)) {
             throw new Exception('No se ha podido subir archivo diagrama');
         }
 
         //carga la ficha tecnica
         $ruta_ficha = "";
         if ($_FILES["ficha"]["size"] > 0) {
-            $_FILES["ficha"]["name"] = "ficha_".$dependencia."_".strtr($nombre," ","_").".pdf";
+            $_FILES["ficha"]["name"] = "ficha_" . $dependencia . "_" . strtr($nombre, " ", "_") . ".pdf";
             $ruta_ficha = "../procesos/por_dependencias/" . basename($_FILES['ficha']['name']);
             if (!move_uploaded_file($_FILES['ficha']['tmp_name'], $ruta_ficha)) {
                 throw new Exception('No se ha podido subir archivo ficha');
@@ -67,66 +67,71 @@ if ($_POST['registro'] == 'nuevo' && isset($_POST['dependencia_perteneciente']))
 }
 
 
-//Cambiar para borrar los procesos de las dependencias
 if ($_POST['registro'] == "eliminar") {
-    $id = $_POST['id'];
-
+    $id = $_POST['id_proceso'];
+    $respuesta = array();
     try {
-        $stmn = $objetoPDO->prepare("DELETE FROM procesos WHERE id_proceso = :id");
-        $stmn->bindParam(":id", $id);
-        if ($stmn->execute()) {
-            $stmn = $objetoPDO->prepare("DELETE FROM procesos_actores WHERE id_proceso = :id;");
-            $stmn->bindParam(":id", $id);
-            if ($stmn->execute()) {
-                $respuesta = array(
-                    "respuesta" => "exito",
-                    "id_dependencia" => $id,
-                );
-            } else {
-                throw new Exception("Error al eliminar los actores");
-            }
-        } else {
-            $respuesta = array(
-                "respuesta" => "error",
-                "id_dependencia" => $id,
-            );
-        }
-        $conn = null;
+        //Se obtiene la info del proceso
+        $stm = $objetoPDO->prepare("SELECT id_proceso,ruta_diagrama,ruta_ficha FROM procesos_dependencias WHERE id_proceso = :id");
+        $stm->bindParam("id", $id);
+        $stm->execute();
+        $data_proceso = $stm->fetchAll(PDO::FETCH_ASSOC);
+/*         echo json_encode(".procesos/por_dependencias/".pathinfo($data_proceso[0]["ruta_diagrama"], PATHINFO_BASENAME ));
+        die; */
+
+        $objetoPDO->beginTransaction();
+        //Se borran los actores ligados al proceso
+        $objetoPDO->exec("DELETE FROM procesos_actores_dependencias WHERE id_proceso_dependencia = ".$id);
+
+        unlink("../procesos/por_dependencias/".pathinfo($data_proceso[0]["ruta_diagrama"], PATHINFO_BASENAME ));
+        unlink("../procesos/por_dependencias/".pathinfo($data_proceso[0]["ruta_ficha"], PATHINFO_BASENAME ));
+
+          //Se borra el proceso
+         $objetoPDO->exec("DELETE FROM procesos_dependencias WHERE id_proceso = ".$id);
+
+         $respuesta = array(
+            "estado" => "ok"
+        );
+
+         $objetoPDO->commit();
     } catch (Exception $e) {
+        $objetoPDO->rollBack();
         $respuesta = array(
-            "respuesta" => $e->getMessage()
+            "estado" => $e->getMessage()
         );
     }
 
-    die(json_encode($respuesta));
+    echo json_encode($respuesta);
 }
 
 if ($_POST['registro'] == "actualizar") {
 
     /*REALIZAR LA OPERACIÓN DE ACTUALIZAR*/
     try {
+        $dependencia = $_POST['dependencia_perteneciente'];
+        $nombre = $_POST['nombre'];
         $respuesta = "";
         //obtener iniciales
         $iniciales_proceso = obtener_iniciales($_POST['nombre']);
-        if ( intval($_POST['no_actores_actual']) != intval($_POST['numero_actores']) ){
+        if (intval($_POST['no_actores_actual']) != intval($_POST['numero_actores'])) {
             $respuesta = borrar_actores_procesos($objetoPDO, $_POST['id_proceso']);
         }
 
         $dir_diagrama = "";
-        if ( $_FILES["diagrama"]["name"] ) {
-            $_FILES["diagrama"]["name"] ="diagrama_".$dependencia."_".strtr($nombre," ","_").".png";
-            $dir_diagrama = "../procesos/por_dependencias/" .basename($_FILES['diagrama']['name']);
+        if ($_FILES["diagrama"]["name"]) {
+            $_FILES["diagrama"]["name"] = "diagrama_" . $dependencia . "_" . strtr($nombre, " ", "_") . ".png";
+            $dir_diagrama = "../procesos/por_dependencias/" . basename($_FILES['diagrama']['name']);
             if (!move_uploaded_file($_FILES['diagrama']['tmp_name'], $dir_diagrama)) {
                 throw new Exception('No se ha podido subir el diagrama');
             }
         } else {
             $dir_diagrama = $_POST['ruta_diagrama_actual'];
         }
-        
+
         //carga la ficha tecnica
         $ruta_ficha = "";
         if ($_FILES["ficha"]["size"] > 0) {
-            $_FILES["ficha"]["name"] = "ficha_".$dependencia."_".strtr($nombre," ","_").".pdf";
+            $_FILES["ficha"]["name"] = "ficha_" . $dependencia . "_" . strtr($nombre, " ", "_") . ".pdf";
             $ruta_ficha = "../procesos/por_dependencias/" . basename($_FILES['ficha']['name']);
             if (!move_uploaded_file($_FILES['ficha']['tmp_name'], $ruta_ficha)) {
                 throw new Exception('No se ha podido subir archivo ficha');
@@ -134,13 +139,13 @@ if ($_POST['registro'] == "actualizar") {
         } else {
             $ruta_ficha = $_POST['ruta_ficha_actual'];
         }
-        
-        $stmn = $objetoPDO->prepare("UPDATE procesos SET nombre=:nombre,ruta_diagrama=:diagrama,ruta_ficha=:ficha,numero_actores=:numero_actores,area_perteneciente=:area WHERE id_proceso=:proceso");
+
+        $stmn = $objetoPDO->prepare("UPDATE procesos_dependencias SET nombre=:nombre,ruta_diagrama=:diagrama,ruta_ficha=:ficha,numero_actores=:numero_actores,dependencia_perteneciente=:depen WHERE id_proceso=:proceso");
         $stmn->bindParam(":nombre", $_POST['nombre']);
         $stmn->bindParam(":diagrama", $dir_diagrama);
         $stmn->bindParam(":ficha", $ruta_ficha);
         $stmn->bindParam(":numero_actores", $_POST['numero_actores']);
-        $stmn->bindParam(":area", $_POST['area_perteneciente']);
+        $stmn->bindParam(":depen", $_POST['dependencia_perteneciente']);
         $stmn->bindParam(":proceso", $_POST['id_proceso']);
         if ($stmn->execute()) {
             $respuesta = array(

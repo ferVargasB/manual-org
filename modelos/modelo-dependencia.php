@@ -76,13 +76,14 @@ if ($_POST['registro'] == "eliminar") {
         $stm->execute();
         $procesos_dependencias = $stm->fetchAll(PDO::FETCH_ASSOC);
 
+        $objetoPDO->beginTransaction();
+
         //Se borran los actores ligados a cada proceso
         foreach ($procesos_dependencias as $proceso) {
             $objetoPDO->exec("DELETE FROM procesos_actores_dependencias WHERE id_proceso_dependencia = " . $proceso['id_proceso']);
         }
 
         //Se borran los procesos ligados a la dependecnia
-        $objetoPDO->beginTransaction();
         $objetoPDO->exec("DELETE FROM procesos_dependencias WHERE dependencia_perteneciente = " . $id);
 
         //Se obtiene informacion del la dependencia

@@ -44,31 +44,8 @@
                                     <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Escriba el nombre del proceso" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="area_perteneciente">Área:</label>
-                                    <select name="area_perteneciente" id="area_perteneciente" class="form-control" required>
-                                        <!-- Codigo PHP  -->
-                                        <?php
-                                        try {
-                                            $stmt = $objetoPDO->prepare("SELECT id_area,nombre FROM areas ORDER BY nombre");
-                                            $stmt->execute();
-                                            $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                                            foreach ($resultado as $row) { ?>
-                                                <option value="<?php echo $row['id_area']; ?>"><?php echo $row["nombre"]; ?></option>
-                                        <?php }
-                                        } catch (Exception $th) {
-                                            throw $e->getMessage();
-                                        }
-                                        ?>
-                                        <!-- Codigo PHP -->
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="habilitar_dependencia">¿Habilitar para dependencia?</label>
-                                    <input type="checkbox" name="habilitar_dependencia" id="habilitar_dependencia">
-                                </div>
-                                <div class="form-group">
                                     <label for="area_perteneciente">Dependencia:</label>
-                                    <select name="dependencia_perteneciente" id="dependencia_perteneciente" class="form-control" disabled>
+                                    <select name="dependencia_perteneciente" id="dependencia_perteneciente" class="form-control">
                                         <!-- Codigo PHP  -->
                                         <?php
                                         try {
@@ -142,10 +119,6 @@
                                 <input type="text" class="form-control" id="nombre_proceso" readonly>
                             </div>
                             <div class="form-group">
-                                <label for="nombre_area">Nombre del Área:</label>
-                                <input type="text" class="form-control" id="nombre_area" readonly>
-                            </div>
-                            <div class="form-group">
                                 <label for="link_diagrama">Diagrama:</label>
                                 <a href="" target="_blank" id="link_diagrama">Ver Diagrama</a>
                             </div>
@@ -153,7 +126,7 @@
                                 <label for="link_ficha">Ficha Técnica:</label>
                                 <a href="" target="_blank" id="link_ficha">Ver Ficha Técnica</a>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group text-center">
                                 <label for="numero_actores_lectura">Número de Actores:</label>
                                 <input type="text" id="numero_actores_lectura" class="form-control" readonly>
                             </div>

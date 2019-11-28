@@ -72,7 +72,7 @@ include_once 'templates/header.php';
                             <td>
                               <a href="editar-proceso.php?id=<?php echo $row['id_proceso'] ?>" class="badge badge-success">Editar Proceso</a>
                               <a href="ver-proceso.php?id=<?php echo $row['id_proceso'] ?>" class="badge badge-success">Ver Proceso</a>
-                              <a href="" data-area="<?php echo $row['id_proceso']; ?>" class="badge badge-success borrar_registro">Borrar Proceso</a>
+                              <a href="" tipo="area" data-id="<?php echo $row['id_proceso']; ?>" class="badge badge-success borrar_registro">Borrar Proceso</a>
                             </td>
                           </tr>
                       <?php }
@@ -152,7 +152,7 @@ include_once 'templates/header.php';
                               <a href="editar-proceso-dependencia.php?id=<?php echo $row['id_proceso'] ?>" class="badge badge-success">Editar Proceso</a>
                               <input type="button" tipo="dependencia" class="badge badge-success borrar_registro" data-id="<?php echo $row['id_proceso']; ?>" value="Borrar Proceso">
                               <a href="ver-proceso-dependencia.php?id=<?php echo $row['id_proceso'] ?>" class="badge badge-success">Ver Proceso</a>
-                              <a href="" tipo="dependencia" data-dependencia="<?php echo $row['id_proceso']; ?>" class="badge badge-success borrar_registro">Borrar Proceso</a>
+                              <a href="" tipo="dependencia" data-id="<?php echo $row['id_proceso']; ?>" class="badge badge-success borrar_registro">Borrar Proceso</a>
                             </td>
                           </tr>
                       <?php }
@@ -231,7 +231,7 @@ include_once 'templates/header.php';
                             <td>
                               <a href="editar-proceso-subarea.php?id=<?php echo $row['id_proceso'] ?>" class="badge badge-success">Editar Proceso</a>
                               <a href="ver-proceso-subarea.php?id=<?php echo $row['id_proceso'] ?>" class="badge badge-success">Ver Proceso</a>
-                              <a href="" tipo="subarea" data-subarea="<?php echo $row['id_proceso']; ?>" class="badge badge-success borrar_registro">Borrar Proceso</a>
+                              <a href="" tipo="subarea" data-id="<?php echo $row['id_proceso']; ?>" class="badge badge-success borrar_registro">Borrar Proceso</a>
                             </td>
                           </tr>
                       <?php }
@@ -291,36 +291,9 @@ include_once 'templates/header.php';
   <script src="js/demo.js"></script>
   <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
-  <script>
-    $(document).ready(function() {
-      $('.sidebar-menu').tree();
-      $(".borrar_registro").on("click", (e) => {
-        if( "area" in e.target.dataset){
-          borrarArea(e.target.dataset.id);
-        } else if ( "dependencia" in e.target.dataset ){
-          console.log("es una dependencia");
-        } else{
-          console.log("es una asubarea");
-        }
-        e.preventDefault();
-      });
-    });
 
-    async function borrarArea(id_proceso){
-      try {
-        let formData = new FormData();
-        formData.append("id_proceso",id_proceso);
-        const response = await fetch("servicios/ws_eliminar_proceso.php?numero_servicio=1", {
-          method:"POST",
-          body:formData
-        });
-        const resultado = await response.json();
-        alert(resultado);
-      } catch (error) {
-        alert(error);
-      }
-    }
-  </script>
+  <script src="js/borrar_procesos.js"></script>
+
   <script>
     $(function() {
       $('#registros').DataTable({

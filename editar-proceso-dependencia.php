@@ -83,7 +83,7 @@
                                         <!-- Codigo PHP  -->
                                         <?php
                                         foreach ($resultado_areas as $row) { ?>
-                                            <option value="<?php echo $row['id_subarea']; ?>" <?php if ($row["id_dependencia"] == $resultado[0]["dependencia_perteneciente"]) {
+                                            <option value="<?php echo $row['id_dependencia']; ?>" <?php if ($row["id_dependencia"] == $resultado[0]["dependencia_perteneciente"]) {
                                                                                                         echo "selected";
                                                                                                     } ?>><?php echo $row["nombre"]; ?></option>
                                         <?php }
@@ -95,12 +95,14 @@
                                     <input type="file" id="diagrama" name="diagrama" accept=".png">
                                     <br>
                                     <a href="<?php echo "admin_area/" . $resultado[0]["ruta_diagrama"]; ?>" target="_blank">Ver Archivo</a>
+                                    <input type="hidden" name="ruta_diagrama_actual" value="<?php echo $resultado[0]["ruta_diagrama"];?>">
                                 </div>
                                 <div class="form-group">
                                     <label for="ficha">Cargar Ficha Técnica:</label>
                                     <input type="file" id="ficha" name="ficha" accept=".pdf">
                                     <br>
                                     <a href="<?php echo "admin_area/" . $resultado[0]["ruta_ficha"]; ?>" target="_blank">Ver Archivo</a>
+                                    <input type="hidden" name="ruta_ficha_actual" value="<?php echo $resultado[0]["ruta_ficha"];?>">
                                 </div>
                                 <div class="form-group">
                                     <label for="numero_actores">Número de Actores:</label>
