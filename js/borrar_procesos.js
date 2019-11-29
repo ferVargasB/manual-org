@@ -7,27 +7,28 @@ $(document).ready(function () {
     async function borrar_proceso(elementClicked) {
         try {
             const id_proceso = elementClicked.target.dataset.id;
-            var URL = "";
+            var url = "";
             const tipoProceso = elementClicked.target.attributes.tipo.value;
 
             if (tipoProceso == "dependencia") {
-                URL = "modelos/modelo-proceso-dependencia.php";
+                url = "modelos/modelo-proceso-dependencia.php";
             } else if (tipoProceso == "area") {
-                URL = "modelos/modelo-proceso.php";
+                url = "modelos/modelo-proceso.php";
             } else {
-                URL = "modelos/modelo-proceso-subarea.php";
+                url = "modelos/modelo-proceso-subarea.php";
             }
             
             var data = new FormData();
             data.append("id_proceso",id_proceso);
             data.append("registro","eliminar");
-            const response = await fetch(URL, {
+
+            const response = await fetch(url, {
                 method: "POST",
                 body: data
             });
 
-            const responseJson = await response.json();
-            mostrarRespuesta(responseJson);
+            const responseProceded = await response.json();
+            mostrarRespuesta(responseProceded);
         } catch (error) {
             alert(error);
         }

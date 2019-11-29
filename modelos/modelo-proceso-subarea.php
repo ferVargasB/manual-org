@@ -13,7 +13,7 @@ if ($_POST['registro'] == 'nuevo' && isset($_POST['subarea_perteneciente'])) {
     try {
         //PARTE PARA SUBIR LOS DOCUMENTOS
         //carga el diagrama del proceso 
-        $_FILES["diagrama"]["name"] = "diagrama_".$subarea_perteneciente."_".strtr($nombre," ","_").".png";
+        $_FILES["diagrama"]["name"] = "diagrama_" . $subarea_perteneciente . "_" . strtr($nombre, " ", "_") . ".png";
         $ruta_diagrama = "../procesos/por_subareas/" . basename($_FILES['diagrama']['name']);
         if (move_uploaded_file($_FILES['diagrama']['tmp_name'], $ruta_diagrama)) { } else {
             throw new Exception('No se ha podido subir archivo diagrama');
@@ -22,7 +22,7 @@ if ($_POST['registro'] == 'nuevo' && isset($_POST['subarea_perteneciente'])) {
         //carga la ficha tecnica
         $ruta_ficha = "";
         if ($_FILES["ficha"]["size"] > 0) {
-            $_FILES["ficha"]["name"] = "ficha_".$subarea_perteneciente."_".strtr($nombre," ","_").".pdf";
+            $_FILES["ficha"]["name"] = "ficha_" . $subarea_perteneciente . "_" . strtr($nombre, " ", "_") . ".pdf";
             $ruta_ficha = "../procesos/por_subareas/" . basename($_FILES['ficha']['name']);
             if (!move_uploaded_file($_FILES['ficha']['tmp_name'], $ruta_ficha)) {
                 throw new Exception('No se ha podido subir archivo ficha');
@@ -65,40 +65,45 @@ if ($_POST['registro'] == 'nuevo' && isset($_POST['subarea_perteneciente'])) {
 }
 
 if ($_POST['registro'] == "eliminar") {
-    $id = $_POST['id'];
+    $respuesta = array();
+    $id = $_POST['id_proceso'];
 
     try {
-        $stmn = $objetoPDO->prepare("DELETE FROM procesos WHERE id_proceso = :id");
-        $stmn->bindParam(":id", $id);
-        if ($stmn->execute()) {
-            $stmn = $objetoPDO->prepare("DELETE FROM procesos_actores WHERE id_proceso = :id;");
-            $stmn->bindParam(":id", $id);
-            if ($stmn->execute()) {
-                $respuesta = array(
-                    "respuesta" => "exito",
-                    "id_dependencia" => $id,
-                );
-            } else {
-                throw new Exception("Error al eliminar los actores");
-            }
-        } else {
-            $respuesta = array(
-                "respuesta" => "error",
-                "id_dependencia" => $id,
-            );
-        }
-        $conn = null;
-    } catch (Exception $e) {
+        //Se obtiene la info del proceso
+        $stm = $objetoPDO->prepare("SELECT id_proceso,ruta_diagrama,ruta_ficha FROM procesos_subareas WHERE id_proceso = :id");
+        $stm->bindParam("id", $id);
+        $stm->execute();
+        $data_proceso = $stm->fetchAll(PDO::FETCH_ASSOC);
+        /*         echo json_encode(".procesos/por_dependencias/".pathinfo($data_proceso[0]["ruta_diagrama"], PATHINFO_BASENAME ));
+        die; */
+
+        $objetoPDO->beginTransaction();
+        //Se borran los actores ligados al proceso
+        $objetoPDO->exec("DELETE FROM procesos_actores_subareas WHERE id_proceso_subarea = " . $id);
+
+        unlink("../procesos/por_subareas/" . pathinfo($data_proceso[0]["ruta_diagrama"], PATHINFO_BASENAME));
+        unlink("../procesos/por_subareas/" . pathinfo($data_proceso[0]["ruta_ficha"], PATHINFO_BASENAME));
+
+        //Se borra el proceso
+        $objetoPDO->exec("DELETE FROM procesos_subareas WHERE id_proceso = " . $id);
+
         $respuesta = array(
-            "respuesta" => $e->getMessage()
+            "estado" => "ok"
+        );
+
+        $objetoPDO->commit();
+    } catch (Exception $e) {
+        $objetoPDO->rollBack();
+        $respuesta = array(
+            "estado" => $e->getMessage()
         );
     }
 
-    die(json_encode($respuesta));
+    echo json_encode($respuesta);
 }
 
 if ($_POST['registro'] == "actualizar") {
-    
+
     $nombre = $_POST['nombre'];
     $subarea_perteneciente = $_POST['subarea_perteneciente'];
 
@@ -113,8 +118,8 @@ if ($_POST['registro'] == "actualizar") {
 
         $dir_diagrama = "";
         if ($_FILES["diagrama"]["name"]) {
-            $_FILES["diagrama"]["name"] = "diagrama_".$subarea_perteneciente."_".strtr($nombre," ","_").".png";
-            $dir_diagrama = "../procesos/por_subareas/".basename($_FILES['diagrama']['name']);
+            $_FILES["diagrama"]["name"] = "diagrama_" . $subarea_perteneciente . "_" . strtr($nombre, " ", "_") . ".png";
+            $dir_diagrama = "../procesos/por_subareas/" . basename($_FILES['diagrama']['name']);
             if (!move_uploaded_file($_FILES['diagrama']['tmp_name'], $dir_diagrama)) {
                 throw new Exception('No se ha podido subir el diagrama');
             }
@@ -125,8 +130,8 @@ if ($_POST['registro'] == "actualizar") {
         //carga la ficha tecnica
         $ruta_ficha = "";
         if ($_FILES["ficha"]["size"] > 0) {
-            $_FILES["ficha"]["name"] = "ficha_".$subarea_perteneciente."_".strtr($nombre," ","_").".pdf";
-            $ruta_ficha ="../procesos/por_subareas/".basename($_FILES['ficha']['name']);
+            $_FILES["ficha"]["name"] = "ficha_" . $subarea_perteneciente . "_" . strtr($nombre, " ", "_") . ".pdf";
+            $ruta_ficha = "../procesos/por_subareas/" . basename($_FILES['ficha']['name']);
             if (!move_uploaded_file($_FILES['ficha']['tmp_name'], $ruta_ficha)) {
                 throw new Exception('No se ha podido subir archivo ficha');
             }
@@ -181,7 +186,7 @@ function borrar_actores_procesos($objetoPDO, $id_proceso)
 function verificar_actores_proceso($objetoPDO, $datos)
 {
     if ($datos['no_actores_actual'] != $datos['numero_actores']) {
-        $stmn = $objetoPDO->prepare("SELECT id_proceso,id_actor FROM procesos_actores WHERE procesos_actores.id_proceso = :id;");
+        $stmn = $objetoPDO->prepare("SELECT id_proceso,id_actor FROM procesos_actores_subareas WHERE procesos_actores.id_proceso_subarea = :id;");
         $stmn->bindParam(":id", $datos['id_proceso']);
         if ($stmn->execute()) {
             $registros = $stmn->fetchAll(PDO::FETCH_ASSOC);

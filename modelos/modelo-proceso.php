@@ -68,35 +68,41 @@ if ($_POST['registro'] == 'nuevo' && isset($_POST['area_perteneciente'])) {
 
 
 if ($_POST['registro'] == "eliminar") {
-    $id = $_POST['id'];
+    $respuesta = array();
+    $id = $_POST['id_proceso'];
 
     try {
-        $stmn = $objetoPDO->prepare("DELETE FROM procesos WHERE id_proceso = :id");
-        $stmn->bindParam(":id", $id);
-        if ($stmn->execute()) {
-            $stmn = $objetoPDO->prepare("DELETE FROM procesos_actores WHERE id_proceso = :id;");
-            $stmn->bindParam(":id", $id);
-            if ($stmn->execute()) {
-                $respuesta = array(
-                    "respuesta" => "exito",
-                    "id_dependencia" => $id,
-                );
-            } else {
-                throw new Exception("Error al eliminar los actores");
-            }
-        } else {
-            $respuesta = array(
-                "respuesta" => "error",
-                "id_dependencia" => $id,
-            );
-        }
-        $conn = null;
+        //Se obtiene la info del proceso
+        $stm = $objetoPDO->prepare("SELECT id_proceso,ruta_diagrama,ruta_ficha FROM procesos WHERE id_proceso = :id");
+        $stm->bindParam("id", $id);
+        $stm->execute();
+        $data_proceso = $stm->fetchAll(PDO::FETCH_ASSOC);
+/*         echo json_encode(".procesos/por_dependencias/".pathinfo($data_proceso[0]["ruta_diagrama"], PATHINFO_BASENAME ));
+        die; */
+
+        $objetoPDO->beginTransaction();
+        //Se borran los actores ligados al proceso
+        $objetoPDO->exec("DELETE FROM procesos_actores WHERE id_proceso = ".$id);
+
+        unlink("../procesos/por_areas/".pathinfo($data_proceso[0]["ruta_diagrama"], PATHINFO_BASENAME ));
+        unlink("../procesos/por_areas/".pathinfo($data_proceso[0]["ruta_ficha"], PATHINFO_BASENAME ));
+
+          //Se borra el proceso
+         $objetoPDO->exec("DELETE FROM procesos WHERE id_proceso = ".$id);
+
+         $respuesta = array(
+            "estado" => "ok"
+        );
+
+         $objetoPDO->commit();
     } catch (Exception $e) {
+        $objetoPDO->rollBack();
         $respuesta = array(
-            "respuesta" => $e->getMessage()
+            "estado" => $e->getMessage()
         );
     }
-    die(json_encode($respuesta));
+
+    echo json_encode($respuesta);
 }
 
 if ($_POST['registro'] == "actualizar") {
