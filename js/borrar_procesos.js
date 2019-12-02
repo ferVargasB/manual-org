@@ -39,7 +39,7 @@ $(document).ready(function () {
             Swal.fire({
                 type: 'error',
                 title: 'Error',
-                text: 'No se ha podido guardar el registro, vuelva a intentarlo'
+                text: 'No se ha podido borrar el registro, vuelva a intentarlo'
             })
         } else {
             Swal.fire({
